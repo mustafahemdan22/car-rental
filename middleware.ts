@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const defaultLocale = 'en';
 const locales = ['en', 'ar'];
-
-function isValidLocale(value: string): boolean {
-  return locales.includes(value);
-}
+const defaultLocale = 'en';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip static files, API routes, and Next.js internals
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
@@ -19,33 +14,22 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check if the pathname already has a valid locale prefix
-  const segments = pathname.split('/');
-  const firstSegment = segments[1];
+  const hasLocale = locales.some(
+    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
+  );
 
-  if (firstSegment && isValidLocale(firstSegment)) {
+  if (hasLocale) {
     return NextResponse.next();
   }
 
-  // Detect preferred locale from cookie or Accept-Language header
   const cookieLocale = request.cookies.get('locale')?.value;
-  let detectedLocale = defaultLocale;
+  const detectedLocale = (cookieLocale && locales.includes(cookieLocale)) ? cookieLocale : defaultLocale;
 
-  if (cookieLocale && isValidLocale(cookieLocale)) {
-    detectedLocale = cookieLocale;
-  } else {
-    const acceptLanguage = request.headers.get('accept-language') || '';
-    const preferred = acceptLanguage.split(',').map((l) => l.split(';')[0].trim().substring(0, 2));
-    const match = preferred.find((l) => locales.includes(l));
-    if (match) detectedLocale = match;
-  }
-
-  // Redirect to the localized path
   const url = request.nextUrl.clone();
-  url.pathname = `/${detectedLocale}${pathname}`;
+  url.pathname = `/${detectedLocale}${pathname === '/' ? '' : pathname}`;
   return NextResponse.redirect(url);
 }
 
 export const config = {
-  matcher: ['/((?!_next|api|.*\\..*).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
