@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* Class-based dark mode for toggle support */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ── Primary: Warm Amber/Copper ──────────────── */
+  --color-primary-50: oklch(0.97 0.01 55);
+  --color-primary-100: oklch(0.93 0.03 55);
+  --color-primary-200: oklch(0.87 0.06 55);
+  --color-primary-300: oklch(0.79 0.09 55);
+  --color-primary-400: oklch(0.72 0.12 55);
+  --color-primary-500: oklch(0.65 0.14 55);
+  --color-primary-600: oklch(0.55 0.13 55);
+  --color-primary-700: oklch(0.45 0.11 55);
+  --color-primary-800: oklch(0.35 0.09 55);
+  --color-primary-900: oklch(0.25 0.06 55);
+  --color-primary-950: oklch(0.18 0.04 55);
+
+  /* ── Accent: Deep Teal ───────────────────────── */
+  --color-accent-50: oklch(0.97 0.01 195);
+  --color-accent-100: oklch(0.93 0.02 195);
+  --color-accent-200: oklch(0.87 0.05 195);
+  --color-accent-300: oklch(0.78 0.08 195);
+  --color-accent-400: oklch(0.68 0.10 195);
+  --color-accent-500: oklch(0.55 0.12 195);
+  --color-accent-600: oklch(0.48 0.10 195);
+  --color-accent-700: oklch(0.40 0.08 195);
+  --color-accent-800: oklch(0.32 0.06 195);
+  --color-accent-900: oklch(0.24 0.04 195);
+  --color-accent-950: oklch(0.18 0.03 195);
+
+  /* ── Neutral: Warm-tinted ────────────────────── */
+  --color-warm-50: oklch(0.98 0.005 55);
+  --color-warm-100: oklch(0.96 0.005 55);
+  --color-warm-200: oklch(0.91 0.008 55);
+  --color-warm-300: oklch(0.85 0.008 55);
+  --color-warm-400: oklch(0.70 0.008 55);
+  --color-warm-500: oklch(0.56 0.008 55);
+  --color-warm-600: oklch(0.45 0.008 55);
+  --color-warm-700: oklch(0.35 0.01 55);
+  --color-warm-800: oklch(0.25 0.01 55);
+  --color-warm-900: oklch(0.18 0.01 55);
+  --color-warm-950: oklch(0.13 0.008 55);
+
+  /* ── Semantic ────────────────────────────────── */
+  --color-success: oklch(0.65 0.15 145);
+  --color-error: oklch(0.60 0.18 25);
+  --color-warning: oklch(0.75 0.15 80);
+  --color-info: oklch(0.65 0.12 230);
+
+  /* ── Shadows ─────────────────────────────────── */
+  --shadow-card: 0 1px 3px oklch(0.25 0.01 55 / 0.08), 0 1px 2px oklch(0.25 0.01 55 / 0.04);
+  --shadow-card-hover: 0 10px 25px oklch(0.25 0.01 55 / 0.10), 0 4px 10px oklch(0.25 0.01 55 / 0.05);
+  --shadow-elevated: 0 20px 40px oklch(0.25 0.01 55 / 0.12);
+  --shadow-inner-glow: inset 0 1px 0 oklch(1 0 0 / 0.05);
+
+  /* ── Font families ───────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+
+  /* ── Easing ──────────────────────────────────── */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Base Styles ───────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-warm-50);
+  color: var(--color-warm-900);
+  transition: background-color 0.3s var(--ease-out-quart), color 0.3s var(--ease-out-quart);
+}
+
+.dark body {
+  background-color: var(--color-warm-950);
+  color: var(--color-warm-100);
+}
+
+[dir="rtl"] {
+  font-family: var(--font-arabic);
+}
+
+/* ── Selection ─────────────────────────────────── */
+
+::selection {
+  background: oklch(0.72 0.12 55 / 0.25);
+  color: var(--color-warm-950);
+}
+
+.dark ::selection {
+  background: oklch(0.72 0.12 55 / 0.35);
+  color: var(--color-warm-50);
+}
+
+/* ── Focus ─────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ─────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-warm-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-warm-400);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-warm-700);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-warm-600);
+}
+
+/* ── Leaflet Overrides ─────────────────────────── */
+
+.leaflet-container {
+  border-radius: 0.75rem;
+  z-index: 1;
+  font-family: inherit;
+}
+
+.dark .leaflet-container {
+  filter: invert(1) hue-rotate(180deg) brightness(1.1) contrast(0.9);
+}
+
+.leaflet-control-attribution {
+  font-size: 0.625rem !important;
+  opacity: 0.6;
+}
+
+/* ── React DatePicker Overrides ────────────────── */
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: inherit !important;
+  border: 1px solid var(--color-warm-200) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: var(--shadow-elevated) !important;
+}
+
+.dark .react-datepicker {
+  background-color: var(--color-warm-900) !important;
+  border-color: var(--color-warm-700) !important;
+  color: var(--color-warm-100) !important;
+}
+
+.react-datepicker__header {
+  background-color: var(--color-primary-50) !important;
+  border-bottom-color: var(--color-warm-200) !important;
+}
+
+.dark .react-datepicker__header {
+  background-color: var(--color-warm-800) !important;
+  border-bottom-color: var(--color-warm-700) !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: var(--color-primary-500) !important;
+}
+
+/* ── Utility Classes ───────────────────────────── */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
