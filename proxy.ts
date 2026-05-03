@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 const locales = ['en', 'ar'];
 const defaultLocale = 'en';
@@ -6,28 +7,23 @@ const defaultLocale = 'en';
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname.includes('.')
-  ) {
-    return NextResponse.next();
-  }
-
-  const isLocalized = locales.some(
-    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
+  // Check if pathname already contains locale
+  const pathnameHasLocale = locales.some(
+    (locale) =>
+      pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (isLocalized) {
-    return NextResponse.next();
-  }
+  if (pathnameHasLocale) return;
 
-  const url = request.nextUrl.clone();
-  url.pathname = `/${defaultLocale}${pathname === '/' ? '' : pathname}`;
+  // Apply default locale redirect
+  const locale = defaultLocale;
+  request.nextUrl.pathname = `/${locale}${pathname}`;
 
-  return NextResponse.redirect(url);
+  return NextResponse.redirect(request.nextUrl);
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!_next|api|favicon.ico|GymHub|gym|images|file.svg|globe.svg|window.svg|next.svg|vercel.svg).*)',
+  ],
 };
