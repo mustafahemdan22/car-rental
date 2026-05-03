@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const locales = ['en', 'ar'];
 const defaultLocale = 'en';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
@@ -14,19 +14,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const hasLocale = locales.some(
+  const isLocalized = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
   );
 
-  if (hasLocale) {
+  if (isLocalized) {
     return NextResponse.next();
   }
 
-  const cookieLocale = request.cookies.get('locale')?.value;
-  const detectedLocale = (cookieLocale && locales.includes(cookieLocale)) ? cookieLocale : defaultLocale;
-
   const url = request.nextUrl.clone();
-  url.pathname = `/${detectedLocale}${pathname === '/' ? '' : pathname}`;
+  url.pathname = `/${defaultLocale}${pathname === '/' ? '' : pathname}`;
+
   return NextResponse.redirect(url);
 }
 
