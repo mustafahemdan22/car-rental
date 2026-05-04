@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { FiUsers, FiDroplet, FiStar } from 'react-icons/fi';
 import type { Car, Locale, Messages } from '@/types';
 import { t } from '@/lib/i18n';
@@ -35,9 +36,16 @@ export function CarCard({ car, locale, messages, onSelect, featured }: CarCardPr
         className="relative aspect-[16/10] overflow-hidden"
         style={getCarPlaceholderStyle(car.color)}
       >
+        <Image
+          src={car.coverImage.url}
+          alt={carName}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+
         {/* Car silhouette overlay */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-4xl font-bold opacity-20">{car.brand}</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+          <span className="text-4xl font-bold opacity-0">{car.brand}</span>
         </div>
 
         {/* Type badge */}

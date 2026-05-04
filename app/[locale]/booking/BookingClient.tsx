@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import type { Locale, Messages } from '@/types';
 import { t } from '@/lib/i18n';
@@ -77,10 +78,14 @@ export function BookingClient({ locale, messages }: BookingClientProps) {
                 {t(messages, 'booking.carDetails')}
               </h3>
               <div className="flex items-center gap-4">
-                <div
-                  className="h-14 w-20 shrink-0 rounded-lg"
-                  style={{ background: `linear-gradient(135deg, ${selectedCar.color}44, ${selectedCar.color}88)` }}
-                />
+                <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg">
+                  <Image
+                    src={selectedCar.coverImage.url}
+                    alt={selectedCar.name[locale]}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <div>
                   <h4 className="font-semibold text-warm-900 dark:text-warm-50">{selectedCar.name[locale]}</h4>
                   <p className="text-xs text-warm-500">{selectedCar.year} · {selectedCar.brand}</p>
