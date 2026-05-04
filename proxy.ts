@@ -12,7 +12,9 @@ export function proxy(request: NextRequest) {
       pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathnameHasLocale) return;
+  if (pathnameHasLocale) {
+    return NextResponse.next();
+  }
 
   // Detect user preferred language if visiting root path
   let locale = defaultLocale;
