@@ -3,14 +3,12 @@ import type { Locale, Direction, Messages } from '@/types';
 export const defaultLocale: Locale = 'en';
 export const locales: Locale[] = ['en', 'ar'];
 
-export function getMessages(locale: Locale): Messages {
-  // Use require for JSON to avoid edge runtime issues
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const en = require('@/messages/en.json');
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const ar = require('@/messages/ar.json');
+import en from '@/messages/en.json';
+import ar from '@/messages/ar.json';
 
-  const messages: Record<Locale, Messages> = { en, ar };
+const messages: Record<Locale, Messages> = { en, ar };
+
+export function getMessages(locale: Locale): Messages {
   return messages[locale] ?? messages[defaultLocale];
 }
 
