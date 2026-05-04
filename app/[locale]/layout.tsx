@@ -20,9 +20,7 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   display: 'swap',
 });
 
-export function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'ar' }];
-}
+export const dynamic = 'force-dynamic';
 
 export default async function LocaleLayout({
   children,
