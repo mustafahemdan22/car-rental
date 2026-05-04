@@ -31,7 +31,7 @@ export function BookingClient({ locale, messages }: BookingClientProps) {
     calculationError,
   } = useBookingStore();
 
-  const canProceed = selectedCar && selectedDriver && pickupLocation && destinationLocation && distanceInKm > 0 && !isCalculating;
+  const canProceed = selectedCar && pickupLocation && destinationLocation && distanceInKm > 0 && !isCalculating;
   const ArrowIcon = locale === 'ar' ? FiArrowRight : FiArrowLeft;
 
   if (!selectedCar) {
@@ -47,20 +47,9 @@ export function BookingClient({ locale, messages }: BookingClientProps) {
     );
   }
 
-  if (!selectedDriver) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <ErrorState
-          title={t(messages, 'booking.noDriverSelected')}
-          message={t(messages, 'booking.noDriverSelected')}
-          onRetry={() => router.push(`/${locale}/drivers`)}
-          retryLabel={t(messages, 'drivers.title')}
-        />
-      </div>
-    );
-  }
-
-  const driverName = typeof selectedDriver.name === 'object' ? selectedDriver.name[locale] : selectedDriver.name;
+  const driverName = selectedDriver
+    ? (typeof selectedDriver.name === 'object' ? selectedDriver.name[locale] : selectedDriver.name)
+    : (locale === 'ar' ? 'بدون سائق' : 'Without Driver (Self-Drive)');
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
@@ -106,12 +95,12 @@ export function BookingClient({ locale, messages }: BookingClientProps) {
               </h3>
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 flex shrink-0 items-center justify-center rounded-full border border-warm-200 bg-white text-xl font-bold text-warm-600 dark:border-warm-700 dark:bg-warm-700 dark:text-warm-300">
-                  {driverName ? driverName[0] : 'D'}
+                  {selectedDriver ? (driverName ? driverName[0] : 'D') : '🚗'}
                 </div>
                 <div>
                   <h4 className="font-semibold text-warm-900 dark:text-warm-50">{driverName}</h4>
                   <p className="text-xs text-warm-500">
-                    {selectedDriver.rating} ★ · {selectedDriver.yearsOfExperience} {t(messages, 'drivers.experience')}
+                    {selectedDriver ? `${selectedDriver.rating} ★ · ${selectedDriver.yearsOfExperience} ${t(messages, 'drivers.experience')}` : (locale === 'ar' ? 'استئجار وقيادة ذاتية' : 'Self-Drive Rental')}
                   </p>
                 </div>
               </div>
