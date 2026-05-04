@@ -7,7 +7,6 @@ const defaultLocale = 'en';
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Check if pathname already contains locale
   const pathnameHasLocale = locales.some(
     (locale) =>
       pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -15,15 +14,22 @@ export function proxy(request: NextRequest) {
 
   if (pathnameHasLocale) return;
 
-  // Apply default locale redirect
-  const locale = defaultLocale;
-  request.nextUrl.pathname = `/${locale}${pathname}`;
+  // Detect user preferred language if visiting root path
+  let locale = defaultLocale;
+  if (pathname === '/') {
+    const acceptLanguage = request.headers.get('accept-language') || '';
+    if (acceptLanguage.includes('ar')) {
+      locale = 'ar';
+    } else if (acceptLanguage.includes('en')) {
+      locale = 'en';
+    }
+  }
+
+  request.nextUrl.pathname = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
 
   return NextResponse.redirect(request.nextUrl);
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next|api|favicon.ico|GymHub|gym|images|file.svg|globe.svg|window.svg|next.svg|vercel.svg).*)',
-  ],
+  matcher: ['/', '/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
