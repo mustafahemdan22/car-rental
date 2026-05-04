@@ -26,7 +26,7 @@ export function proxy(request: NextRequest) {
   }
 
   const targetPath = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
-  return NextResponse.rewrite(new URL(targetPath, request.url));
+  return NextResponse.redirect(new URL(targetPath, request.url));
 }
 
 export const config = {
