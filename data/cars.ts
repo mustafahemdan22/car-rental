@@ -365,7 +365,7 @@ export const cars: Car[] = [
     ...buildCarImages('mercedes-vito-2024', '#2C3539'),
     description: {
       en: 'Premium multi-purpose van for larger families or executive transportation.',
-      ar: 'فان فاخر متعدد الأغراض للعائلات الكبيرة أو التنقلات التنفيذية.',
+      ar: 'فان فاخر متعدد الأغراض للعائلات الكبيرة و التنقلات التنفيذية.',
     },
     features: ['leather-seating', 'cruise-control', 'ambient-lighting', 'sliding-doors'],
     inStock: true,
