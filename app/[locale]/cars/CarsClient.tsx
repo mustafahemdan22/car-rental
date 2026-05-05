@@ -3,9 +3,11 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import type { Locale, Messages, FilterState, SortOption, Car } from '@/types';
 import { t } from '@/lib/i18n';
-import { cars as allCars } from '@/data/cars';
+import { mapConvexCar } from '@/lib/utils';
 import { useBookingStore } from '@/store/bookingStore';
 import { CarCard } from '@/components/cars/CarCard';
 import { FilterBar } from '@/components/cars/FilterBar';
@@ -37,18 +39,25 @@ export function CarsClient({ locale, messages }: CarsClientProps) {
   const [filtersEnabled, setFiltersEnabled] = useState(true);
   const [sort, setSort] = useState<SortOption>('rating-desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loadingInitial, setLoadingInitial] = useState(true);
 
-  // Simulate initial loading
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(timer);
-  }, []);
+  const rawCars = useQuery(api.cars.getAllCars);
+  
+  // Map Convex data to Car type
+  const allCars: Car[] = useMemo(() => {
+    if (!rawCars) return [];
+    return rawCars.map(mapConvexCar);
+  }, [rawCars]);
 
-  // Reset pagination on filters or sort change
+  // Handle loading state
   useEffect(() => {
-    setCurrentPage(1);
-  }, [filters, filtersEnabled, sort]);
+    if (rawCars !== undefined) {
+      const timer = setTimeout(() => setLoadingInitial(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [rawCars]);
+
+  const loading = loadingInitial || rawCars === undefined;
 
   const filtered = useMemo(() => {
     let result = [...allCars];

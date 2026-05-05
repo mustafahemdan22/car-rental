@@ -111,8 +111,7 @@ export function createMockCarImage(
 
   return {
     publicId,
-    // Placeholder URL; will be replaced with Cloudinary URL in production
-    url: `/api/placeholder/${carSlug}/${type}${type === 'gallery' ? `-${index}` : ''}`,
+    url: cloudinaryUrl(publicId, type === 'cover' ? 'hero' : 'gallery'),
     alt: `${carSlug} ${type}${type === 'gallery' ? ` ${index + 1}` : ''}`,
     width: type === 'cover' ? 800 : 600,
     height: type === 'cover' ? 500 : 400,

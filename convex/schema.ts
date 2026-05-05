@@ -6,6 +6,7 @@ export default defineSchema({
     slug: v.string(),
     name_en: v.string(),
     name_ar: v.string(),
+    brand: v.string(),
     category: v.string(), // economy, suv, luxury, van
     type: v.string(), // sedan, suv, sports, luxury, economy, van
     pricePerKm: v.number(),
@@ -16,8 +17,11 @@ export default defineSchema({
     available: v.boolean(),
     driverRequired: v.boolean(),
     rating: v.number(),
+    reviewCount: v.number(),
+    color: v.string(),
     description_en: v.string(),
     description_ar: v.string(),
+    features: v.array(v.string()),
   }),
   drivers: defineTable({
     name_en: v.string(),

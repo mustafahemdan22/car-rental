@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiStar, FiCalendar, FiCheckCircle } from 'react-icons/fi';
-import type { Locale, Messages, Driver } from '@/types';
+import type { Locale, Messages, Driver, Car } from '@/types';
 import { t } from '@/lib/i18n';
 import { useBookingStore } from '@/store/bookingStore';
-import { drivers } from '@/data/drivers';
-import { cars } from '@/data/cars';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { mapConvexDriver, mapConvexCar } from '@/lib/utils';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 
@@ -21,12 +22,29 @@ export function DriversClient({ locale, messages }: DriversClientProps) {
   const router = useRouter();
   const selectDriver = useBookingStore((s) => s.selectDriver);
   const selectedDriverId = useBookingStore((s) => s.selectedDriver?.id);
-  const [loading, setLoading] = useState(true);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+
+  const rawDrivers = useQuery(api.drivers.getAvailableDrivers);
+  const rawCars = useQuery(api.cars.getAllCars);
+
+  const drivers: Driver[] = useMemo(() => {
+    if (!rawDrivers) return [];
+    return rawDrivers.map(mapConvexDriver);
+  }, [rawDrivers]);
+
+  const cars: Car[] = useMemo(() => {
+    if (!rawCars) return [];
+    return rawCars.map(mapConvexCar);
+  }, [rawCars]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (rawDrivers !== undefined && rawCars !== undefined) {
+      const timer = setTimeout(() => setLoadingInitial(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [rawDrivers, rawCars]);
+
+  const loading = loadingInitial || rawDrivers === undefined || rawCars === undefined;
 
   const handleSelect = (driver: Driver) => {
     selectDriver(driver);

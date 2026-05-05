@@ -1,4 +1,66 @@
-import type { Locale } from '@/types';
+import type { Locale, Car, Driver } from '@/types';
+import { cloudinaryUrl } from '@/lib/cloudinary';
+
+/**
+ * Maps a Convex car document to the frontend Car type.
+ */
+export function mapConvexCar(c: any): Car {
+  return {
+    id: c._id,
+    slug: c.slug,
+    name: { en: c.name_en, ar: c.name_ar },
+    brand: c.brand,
+    year: c.year,
+    type: c.type as any,
+    pricePerKm: c.pricePerKm,
+    seats: c.seats,
+    fuelType: c.fuelType as any,
+    coverImage: {
+      publicId: c.images[0] || '',
+      url: cloudinaryUrl(c.images[0] || '', 'hero'),
+      alt: c.name_en,
+      width: 800,
+      height: 500,
+      assetFolder: 'cars'
+    },
+    gallery: c.images.slice(1).map((publicId: string, i: number) => ({
+      publicId: publicId,
+      url: cloudinaryUrl(publicId, 'gallery'),
+      alt: `${c.name_en} gallery ${i}`,
+      width: 800,
+      height: 500,
+      assetFolder: 'cars'
+    })),
+    description: { en: c.description_en, ar: c.description_ar },
+    features: c.features,
+    inStock: c.available,
+    rating: c.rating,
+    reviewCount: c.reviewCount,
+    color: c.color,
+  };
+}
+
+/**
+ * Maps a Convex driver document to the frontend Driver type.
+ */
+export function mapConvexDriver(d: any): Driver {
+  return {
+    id: d._id,
+    name: { en: d.name_en, ar: d.name_ar },
+    avatarImage: {
+      publicId: d.image,
+      url: cloudinaryUrl(d.image, 'thumbnail'),
+      alt: d.name_en,
+      width: 200,
+      height: 200,
+    },
+    rating: d.rating,
+    tripsCompleted: d.tripsCompleted,
+    yearsOfExperience: d.yearsOfExperience,
+    description: { en: d.description_en, ar: d.description_ar },
+    assignedCarId: d.assignedCarId,
+  };
+}
 
 /**
  * Format price in SAR with locale-appropriate formatting.

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FiDollarSign, FiTruck, FiClock, FiShield, FiArrowRight } from 'react-icons/fi';
@@ -11,8 +12,10 @@ import { CarCard } from '@/components/cars/CarCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { CTASection } from '@/components/ui/CTASection';
 import { useBookingStore } from '@/store/bookingStore';
-import { getFeaturedCars } from '@/data/cars';
 import { useRouter } from 'next/navigation';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { mapConvexCar } from '@/lib/utils';
 
 interface HomeClientProps {
   locale: Locale;
@@ -29,7 +32,16 @@ const fadeUp = {
 export function HomeClient({ locale, messages }: HomeClientProps) {
   const router = useRouter();
   const selectCar = useBookingStore((s) => s.selectCar);
-  const featuredCars = getFeaturedCars();
+  
+  const rawCars = useQuery(api.cars.getAllCars);
+  const featuredCars = useMemo(() => {
+    if (!rawCars) return [];
+    return rawCars
+      .filter((c) => c.available)
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 6)
+      .map(mapConvexCar);
+  }, [rawCars]);
 
   const handleSelectCar = (car: Parameters<typeof selectCar>[0]) => {
     if (car) {

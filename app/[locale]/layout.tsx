@@ -4,6 +4,7 @@ import { getMessages, getDirection, isValidLocale, defaultLocale } from '@/lib/i
 import { ThemeProvider } from '@/lib/theme';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { ConvexClientProvider } from '@/components/providers/ConvexClientProvider';
 import type { Locale } from '@/types';
 import '@/styles/globals.css';
 
@@ -58,11 +59,13 @@ export default async function LocaleLayout({
       </head>
       <body className={`min-h-screen ${locale === 'ar' ? 'font-[var(--font-ibm-arabic)]' : 'font-[var(--font-inter)]'} antialiased`}>
         <ThemeProvider>
-          <div className="flex min-h-screen flex-col">
-            <Navbar locale={locale} messages={messages} />
-            <main className="flex-1">{children}</main>
-            <Footer locale={locale} messages={messages} />
-          </div>
+          <ConvexClientProvider>
+            <div className="flex min-h-screen flex-col">
+              <Navbar locale={locale} messages={messages} />
+              <main className="flex-1">{children}</main>
+              <Footer locale={locale} messages={messages} />
+            </div>
+          </ConvexClientProvider>
           <Toaster
             position={dir === 'rtl' ? 'top-left' : 'top-right'}
             toastOptions={{
